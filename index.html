@@ -10,6 +10,21 @@
     />
     <link rel="shortcut icon" href="/icon.png" type="image/png" />
     <link rel="stylesheet" href="style.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <script
+      defer
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+
+    <script defer src="script.js"></script>
     <title>Mapty</title>
   </head>
   <body>
@@ -17,7 +32,7 @@
       <img src="logo.png" alt="logo" class="logo" />
 
       <ul class="workouts">
-        <form class="form">
+        <form class="form hidden">
           <div class="form__row">
             <label class="form__label">Type</label>
             <select class="form__input form__input--type">
@@ -60,7 +75,7 @@
           <button class="form__btn">OK</button>
         </form>
 
-        <li class="workout workout--running">
+        <!-- <li class="workout workout--running">
           <h2 class="workout__title">Running on April 14</h2>
           <div class="workout__details">
             <span class="workout__icon">🏃</span>
@@ -106,7 +121,7 @@
             <span class="workout__value">223</span>
             <span class="workout__unit">m</span>
           </div>
-        </li>
+        </li> -->
       </ul>
 
       <p class="copyright">
