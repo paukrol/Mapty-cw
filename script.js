@@ -1,20 +1,5 @@
 'use strict';
 
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
 const inputType = document.querySelector('.form__input--type');
@@ -32,6 +17,27 @@ class Workout {
     this.distance = distance; // in km
     this.duration = duration; // in min
   }
+
+  _setDescription() {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
+      months[this.date.getMonth()]
+    } ${this.date.getDate()}`;
+  }
 }
 
 class Running extends Workout {
@@ -40,6 +46,7 @@ class Running extends Workout {
     super(coords, distance, duration);
     this.cadence = cadence;
     this.calcPace();
+    this._setDescription();
   }
 
   calcPace() {
@@ -54,6 +61,7 @@ class Cycling extends Workout {
     super(coords, distance, duration);
     this.elevationGain = elevationGain;
     this.calcSpeed();
+    this._setDescription();
   }
 
   calcSpeed() {
@@ -75,12 +83,15 @@ class App {
   workouts = [];
   map;
   mapEvent;
+  mapZoomLevel = 13;
   constructor() {
     this._getPosition();
 
     form.addEventListener('submit', this._newWorkout.bind(this));
 
     inputType.addEventListener('change', this._toggleElevationField);
+
+    containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
   }
 
   _getPosition() {
@@ -101,7 +112,7 @@ class App {
     const coords = [latitude, longitude];
 
     console.log(this);
-    this.map = L.map('map').setView(coords, 13);
+    this.map = L.map('map').setView(coords, this.mapZoomLevel);
     // console.log(this.map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -211,7 +222,9 @@ class App {
           className: `${workout.type}-popup`,
         })
       )
-      .setPopupContent('Workout')
+      .setPopupContent(
+        `${workout.type === 'running' ? '🏃' : '🚲'} ${workout.description}`
+      )
       .openPopup();
   }
 
@@ -219,9 +232,7 @@ class App {
     const html = `<li class="workout workout--${workout.type}" data-id="${
       workout.id
     }">
-    <h2 class="workout__title">${workout.type[0].toUpperCase()}${workout.type.slice(
-      1
-    )} on ${months[workout.date.getMonth()]} ${workout.date.getDate()}</h2>
+    <h2 class="workout__title">${workout.description} </h2>
     <div class="workout__details">
       <span class="workout__icon">${
         workout.type === 'running' ? '🏃' : '🚲'
@@ -259,6 +270,22 @@ class App {
   </li>`;
 
     form.insertAdjacentHTML('afterend', html);
+  }
+
+  _moveToPopup(e) {
+    const workoutEl = e.target.closest('.workout');
+    if (!workoutEl) return;
+
+    const workout = this.workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    this.map.setView(workout.coords, this.mapZoomLevel, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
   }
 }
 
